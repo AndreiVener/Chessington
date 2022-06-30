@@ -11,6 +11,11 @@
             Col = col;
         }
 
+        public bool IsSquareValid()
+        {
+            if (Row < 0 || Row >= GameSettings.BoardSize || Col < 0 || Col >= GameSettings.BoardSize) return false;
+            return true;
+        }
         public static Square At(int row, int col)
         {
             return new Square(row, col);
