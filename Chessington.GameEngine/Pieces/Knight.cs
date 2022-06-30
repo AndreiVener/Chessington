@@ -6,26 +6,30 @@ namespace Chessington.GameEngine.Pieces
     public class Knight : Piece
     {
         public Knight(Player player)
-            : base(player) { }
+            : base(player)
+        {
+        }
 
         public override IEnumerable<Square> GetAvailableMoves(Board board)
         {
-            List<Square> availablePositions = new List<Square>();
+            var availablePositions = new List<Square>();
             var currentSquare = board.FindPiece(this);
-            int row = currentSquare.Row;
-            int col = currentSquare.Col;
 
-            int[] rowPos = new[] { -2, -2, 1, -1, 2, 2, 1, -1 };
-            int[] colPos = new[] { 1, -1, 2, 2, 1, -1, -2, -2 };
-            
-            for(int at = 0; at < 8; at++)
+            var rowPos = new[] { -2, -2, 1, -1, 2, 2, 1, -1 };
+            var colPos = new[] { 1, -1, 2, 2, 1, -1, -2, -2 };
+
+            for (var at = 0; at < 8; at++)
             {
-
                 var possiblePosition = new Square(currentSquare.Row + rowPos[at], currentSquare.Col + colPos[at]);
-                if(!possiblePosition.IsSquareValid(board) || board.GetPiece(possiblePosition) != null) continue;
-                availablePositions.Add(possiblePosition);
-                                
+                if (possiblePosition.IsSquareValid(board))
+                {
+                    availablePositions.Add(possiblePosition);
+                }
+                if (possiblePosition.IsSquareInsideBorders() && possiblePosition.IsSquareOccupied(board) &&
+                    board.GetPiece(possiblePosition).Player != Player)
+                    availablePositions.Add(possiblePosition);
             }
+
             return availablePositions.AsEnumerable();
         }
     }

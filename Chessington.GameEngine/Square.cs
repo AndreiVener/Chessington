@@ -11,12 +11,32 @@
             Col = col;
         }
 
-        public bool IsSquareValid(Board board)
+        public bool IsSquareInsideBorders()
         {
             if (Row < 0 || Row >= GameSettings.BoardSize || Col < 0 || Col >= GameSettings.BoardSize) return false;
-            if (board.GetPiece(this) != null) return false;
             return true;
         }
+
+        public bool IsSquareValid(Board board)
+        {
+            if (!IsSquareInsideBorders()) return false;
+            if (IsSquareOccupied(board)) return false;
+            return true;
+        }
+
+        public bool IsSquareOccupied(Board board)
+        {
+            if (board.GetPiece(this) != null) return true;
+            return false;
+        }
+
+        public bool IsSquareOccupiedByEnemy(Board board,Player player)
+        {
+            if (IsSquareInsideBorders() && IsSquareOccupied(board) &&
+                board.GetPiece(this).Player != player) return true;
+            return false;
+        }
+
         public static Square At(int row, int col)
         {
             return new Square(row, col);
@@ -32,7 +52,7 @@
             if (ReferenceEquals(null, obj)) return false;
             return obj is Square && Equals((Square)obj);
         }
-
+        
         public override int GetHashCode()
         {
             unchecked

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Chessington.GameEngine.Pieces
 {
@@ -8,7 +6,6 @@ namespace Chessington.GameEngine.Pieces
     {
         protected Piece(Player player)
         {
-            
             Player = player;
         }
 
@@ -24,77 +21,56 @@ namespace Chessington.GameEngine.Pieces
             Moved = true;
         }
 
-        public List<Square> GetAvailableMovesLine(Square currentSquare, Board board)
+        protected IEnumerable<Square> GetAvailableMovesLine(Square currentSquare, Board board)
         {
             List<Square> availablePositions = new List<Square>();
-            
-            var up = Square.At(currentSquare.Row - 1, currentSquare.Col);
-            while (up.IsSquareValid(board))
-            {
-                availablePositions.Add(up);
-                up = Square.At(up.Row - 1, up.Col);
-            }
-            
-            var right = Square.At(currentSquare.Row , currentSquare.Col+1);
-            while (right.IsSquareValid(board))
-            {
-                availablePositions.Add(right);
-                right = Square.At(right.Row, right.Col + 1);
 
-            }
-            
-            var left = Square.At(currentSquare.Row , currentSquare.Col-1);
-            while (left.IsSquareValid(board))
-            {
-                availablePositions.Add(left);
-                left = Square.At(left.Row, left.Col - 1);
+            int[] rowDir = { 0, 0, 1, -1 };
+            int[] colDir = { 1, -1, 0, 0 };
 
-            }
-            
-            var down = Square.At(currentSquare.Row + 1 , currentSquare.Col);
-            while (down.IsSquareValid(board))
+            for (var at = 0; at < rowDir.Length; at++)
             {
-                availablePositions.Add(down);
-                down = Square.At(down.Row + 1, down.Col);
+                var l = GoInDirection(board, rowDir[at], colDir[at], currentSquare);
+                availablePositions.AddRange(l);
+            }
 
+            availablePositions.RemoveAll(square => square.Equals(currentSquare));
+            return availablePositions;
+        }
+
+        protected IEnumerable<Square> GetAvailableMovesDiagonally(Square currentSquare, Board board)
+        {
+            var availablePositions = new List<Square>();
+
+            int[] rowDir = { 1, -1, 1, -1 };
+            int[] colDir = { 1, 1, -1, -1 };
+
+            for (var at = 0; at < rowDir.Length; at++)
+            {
+                var l = GoInDirection(board, rowDir[at], colDir[at], currentSquare);
+                availablePositions.AddRange(l);
+            }
+
+            availablePositions.RemoveAll(square => square.Equals(currentSquare));
+            return availablePositions;
+        }
+
+        private IEnumerable<Square> GoInDirection(Board board, int rowDir, int colDir, Square atSquare)
+        {
+            var currentSquare = atSquare;
+            var availablePositions = new List<Square>();
+            while (atSquare.IsSquareValid(board) || atSquare.Equals(currentSquare))
+            {
+                availablePositions.Add(atSquare);
+                atSquare = Square.At(atSquare.Row + rowDir, atSquare.Col + colDir);
+            }
+
+            if (atSquare.IsSquareInsideBorders() && board.GetPiece(atSquare).Player != Player)
+            {
+                availablePositions.Add(atSquare);
             }
 
             return availablePositions;
         }
-
-        public List<Square> GetAvailableMovesDiagonally(Square currentSquare, Board board)
-        {
-            List<Square> availablePositions = new List<Square>();
-            var leftUp = Square.At(currentSquare.Row - 1, currentSquare.Col-1);
-            while (leftUp.IsSquareValid(board))
-            {
-                availablePositions.Add(leftUp);
-                leftUp = Square.At(leftUp.Row - 1, leftUp.Col - 1);
-            }
-            
-            var rightUp = Square.At(currentSquare.Row - 1, currentSquare.Col+1);
-            while (rightUp.IsSquareValid(board))
-            {
-                availablePositions.Add(rightUp);
-                rightUp = Square.At(rightUp.Row - 1, rightUp.Col + 1);
-            }
-            var leftDown = Square.At(currentSquare.Row + 1, currentSquare.Col-1);
-            while (leftDown.IsSquareValid(board))
-            {
-                availablePositions.Add(leftDown);
-                leftDown = Square.At(leftDown.Row + 1, leftDown.Col - 1);
-            }
-            
-            var rightDown = Square.At(currentSquare.Row + 1, currentSquare.Col+1);
-            while (rightDown.IsSquareValid(board))
-            {
-                availablePositions.Add(rightDown);
-                rightDown = Square.At(rightDown.Row + 1, rightDown.Col + 1);
-            }
-            return availablePositions;
-        }
-
-
-
     }
 }
