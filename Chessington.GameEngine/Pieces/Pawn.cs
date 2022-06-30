@@ -16,22 +16,37 @@ namespace Chessington.GameEngine.Pieces
             
             if (Player == Player.White)
             {
-                var inFrontSquare = new Square(currentSquare.Row - 1, currentSquare.Col);
-                Console.WriteLine(inFrontSquare.Row + " " + inFrontSquare.Col);
-
-                var pieceInFront = board.GetPiece(inFrontSquare);
-                if (pieceInFront == null)
+                var inFrontSquare = Square.At(currentSquare.Row - 1, currentSquare.Col);
+                if (inFrontSquare.IsSquareValid(board))
                 {
                     availablePositions.Add(inFrontSquare);
+                }else
+                {
+                    return Enumerable.Empty<Square>();
+                }
+
+                var inFrontTwoSquares = Square.At(currentSquare.Row - 2, currentSquare.Col);
+                if (Moved == false && inFrontTwoSquares.IsSquareValid(board))
+                {
+                    availablePositions.Add(inFrontTwoSquares);
                 }
             }
             else
             {
-                var inFrontSquare = new Square(currentSquare.Row + 1, currentSquare.Col);
-                var pieceInFront = board.GetPiece(inFrontSquare);
-                if (pieceInFront == null)
+                var inFrontSquare = Square.At(currentSquare.Row + 1, currentSquare.Col);
+                if (inFrontSquare.IsSquareValid(board))
                 {
                     availablePositions.Add(inFrontSquare);
+                }
+                else
+                {
+                    return Enumerable.Empty<Square>();
+                }
+                
+                var inFrontTwoSquares = Square.At(currentSquare.Row + 2, currentSquare.Col);
+                if (Moved == false && inFrontTwoSquares.IsSquareValid(board))
+                {
+                    availablePositions.Add(inFrontTwoSquares);
                 }
             }
             

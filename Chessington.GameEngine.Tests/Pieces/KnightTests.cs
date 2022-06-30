@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using Chessington.GameEngine.Pieces;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace Chessington.GameEngine.Tests.Pieces
 {

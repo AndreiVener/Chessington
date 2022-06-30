@@ -22,7 +22,7 @@ namespace Chessington.GameEngine.Pieces
             {
 
                 var possiblePosition = new Square(currentSquare.Row + rowPos[at], currentSquare.Col + colPos[at]);
-                if(!possiblePosition.IsSquareValid() || board.GetPiece(possiblePosition) != null) continue;
+                if(!possiblePosition.IsSquareValid(board) || board.GetPiece(possiblePosition) != null) continue;
                 availablePositions.Add(possiblePosition);
                                 
             }
